@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>George 的個人簡介 - HW3 (Agent Modified)</title>
+    <style>
+        .dark-mode { background-color: #1a202c; color: white; }
+        .card { padding: 20px; border: 1px solid #ccc; border-radius: 8px; margin-top: 20px; }
+        button { padding: 10px 20px; cursor: pointer; background: #4a5568; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body id="content">
+    <div style="text-align: center; padding: 50px;">
+        <h1>這是經由 Agent 生成並手動優化的網頁</h1>
+        <button onclick="toggleDark()">切換深色模式</button>
+        <div class="card">
+            <h3>修改重點：</h3>
+            <p>1. 加入了 JavaScript 互動功能。</p>
+            <p>2. 優化了 CSS 卡片樣式。</p>
+        </div>
+    </div>
+    <script>
+        function toggleDark() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
+</body>
+</html>
