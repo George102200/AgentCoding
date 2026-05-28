@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>George 的個人簡介 - HW4 (Database)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 p-10">
+    <div class="max-w-2xl mx-auto border border-slate-700 p-6 rounded-lg">
+        <h1 class="text-3xl font-mono text-green-400">Fetch Data from JSON Database...</h1>
+        <div id="db-content" class="mt-6 space-y-4">
+            <p>Loading data...</p>
+        </div>
+    </div>
+
+    <script>
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('db-content');
+                container.innerHTML = `
+                    <p><strong>姓名：</strong> ${data.name}</p>
+                    <p><strong>GitHub：</strong> ${data.github_id}</p>
+                    <p><strong>專案列表：</strong></p>
+                    <ul class="list-disc ml-6">
+                        ${data.projects.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                    <p class="text-sm text-slate-500 mt-4">最後更新：${data.update_date}</p>
+                `;
+            });
+    </script>
+</body>
+</html>
