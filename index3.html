@@ -2,32 +2,80 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>George 的個人簡介 - HW4 (Database)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>George's Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 隱藏捲軸但保持可滾動，讓畫面更乾淨 */
+        ::-webkit-scrollbar { display: none; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 p-10">
-    <div class="max-w-2xl mx-auto border border-slate-700 p-6 rounded-lg">
-        <h1 class="text-3xl font-mono text-green-400">Fetch Data from JSON Database...</h1>
-        <div id="db-content" class="mt-6 space-y-4">
-            <p>Loading data...</p>
+<body class="bg-slate-900 text-slate-200 font-sans min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-3xl w-full bg-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-700 transition-all duration-500 hover:shadow-cyan-500/20">
+        <div class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600"></div>
+        
+        <div class="p-8">
+            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-6">
+                <i class="fa-solid fa-terminal text-cyan-400 mr-2"></i>Developer Profile
+            </h1>
+            
+            <div id="db-content" class="space-y-6">
+                <div class="flex justify-center items-center py-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-cyan-500"></i>
+                    <span class="ml-3 text-slate-400 text-lg">載入資料中...</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('db-content');
-                container.innerHTML = `
-                    <p><strong>姓名：</strong> ${data.name}</p>
-                    <p><strong>GitHub：</strong> ${data.github_id}</p>
-                    <p><strong>專案列表：</strong></p>
-                    <ul class="list-disc ml-6">
-                        ${data.projects.map(p => `<li>${p}</li>`).join('')}
-                    </ul>
-                    <p class="text-sm text-slate-500 mt-4">最後更新：${data.update_date}</p>
-                `;
-            });
+        // 加入延遲以展示載入動畫 (實務上可移除 setTimeout，直接 fetch)
+        setTimeout(() => {
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('網路回應異常');
+                    return response.json();
+                })
+                .then(data => {
+                    const container = document.getElementById('db-content');
+                    // 將專案列表轉為卡片式設計
+                    const projectCards = data.projects.map(p => `
+                        <div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600 hover:bg-slate-700 hover:scale-[1.02] transition-transform cursor-pointer">
+                            <i class="fa-solid fa-code text-blue-400 mr-2"></i>${p}
+                        </div>
+                    `).join('');
+
+                    container.innerHTML = `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <p class="text-lg"><i class="fa-solid fa-user text-slate-400 w-6"></i> <span class="font-bold text-white">${data.name}</span></p>
+                                <p class="text-lg"><i class="fa-brands fa-github text-slate-400 w-6"></i> <a href="https://github.com/${data.github_id}" target="_blank" class="text-blue-400 hover:text-blue-300 hover:underline">${data.github_id}</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <h3 class="text-xl font-bold mb-4 text-slate-300 border-b border-slate-700 pb-2">近期專案 (Projects)</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                ${projectCards}
+                            </div>
+                        </div>
+
+                        <div class="mt-8 text-right">
+                            <p class="text-xs text-slate-500"><i class="fa-regular fa-clock"></i> 最後更新：${data.update_date}</p>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById('db-content').innerHTML = `
+                        <div class="bg-red-900/50 text-red-400 p-4 rounded-lg border border-red-700 text-center">
+                            <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
+                            <p>資料讀取失敗，請確認 data.json 檔案是否存在。</p>
+                        </div>
+                    `;
+                });
+        }, 800); // 模擬網路延遲 0.8 秒
     </script>
 </body>
 </html>
